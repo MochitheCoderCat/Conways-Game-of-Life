@@ -64,7 +64,6 @@ const App = () => {
         <button type="submit">Set Grid Size</button>
       </form>
       <Grid width={gridSize.width} height={gridSize.height} />
-      
     </div>
   );
 };
