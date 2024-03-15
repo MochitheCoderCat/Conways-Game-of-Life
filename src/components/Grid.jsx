@@ -1,49 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import Cell from "./Cell";
 
-const Grid = ({ width, height }) => {
-  const createInitialGrid = () => {
-    let initialGrid = [];
-    for (let i = 0; i < height; i++) {
-      let row = [];
-      for (let j = 0; j < width; j++) {
-        row.push(Math.random() < 0.05 ? 1 : 0); // 5% chance of being alive
-      }
-      initialGrid.push(row);
-    }
-    return initialGrid;
-  };
+function initializeGridAndHeatmap(width, height) {
+  const grid = [];
+  const heatmap = []; // This array will start with the same structure and values as the grid
 
-  const [grid, setGrid] = useState(createInitialGrid);
+  for (let i = 0; i < height; i++) {
+    let gridRow = [];
+    let heatmapRow = [];
+
+    for (let j = 0; j < width; j++) {
+      const cellState = Math.random() < 0.05 ? 1 : 0; // 5% chance of being alive
+      gridRow.push(cellState);
+      heatmapRow.push(cellState ? 1: 0); // Initialize heatmap with 0 or cellState if you want them identical
+    }
+
+    grid.push(gridRow);
+    heatmap.push(heatmapRow);
+  }
+  console.log(grid, heatmap);
+  return { grid, heatmap };
+}
+
+const Grid = ({ width, height }) => {
+   
+  const { grid: initialGrid, heatmap: initialHeatmap } = initializeGridAndHeatmap(width, height);
+  const [grid, setGrid] = useState(initialGrid);
+  const [heatmap, setHeatmap] = useState(initialHeatmap);
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [livingCellsCount, setLivingCellsCount] = useState(() =>
+  initialGrid.flat().filter(cell => cell === 1).length); 
+
+
 
   // Regenerate the grid when width or height changes
   useEffect(() => {
-    setGrid(createInitialGrid());
+    // setGrid(createInitialGrid());
+    const { grid: newGrid, heatmap: newHeatmap } = initializeGridAndHeatmap(width, height);
+    setGrid(newGrid);
+    setHeatmap(newHeatmap);
   }, [width, height]); // Dependence on width and height
 
-  const toggleCellState = (rowIndex, colIndex) => {
-    const newGrid = grid.map((row, i) =>
-      row.map((cell, j) =>
-        rowIndex === i && colIndex === j ? 1 - cell : cell
-      )
-    );
-    setGrid(newGrid);
-  };
+  // const toggleCellState = (rowIndex, colIndex) => {
+  //   const newGrid = grid.map((row, i) =>
+  //     row.map((cell, j) =>
+  //       rowIndex === i && colIndex === j ? 1 - cell : cell
+  //     )
+  //   );
+  //   setGrid(newGrid);
+  // };
 
-  // set Living Cells State
-  const [livingCellsCount, setLivingCellsCount] = useState(0);
+  const toggleCellState = (rowIndex, colIndex) => {
+    setGrid(prevGrid => {
+      const newGrid = prevGrid.map((row, i) =>
+          row.map((cell, j) => rowIndex === i && colIndex === j ? 1 - cell : cell)
+      );
+      // Update living cells count based on the new grid state
+      setLivingCellsCount(newGrid.flat().filter(cell => cell === 1).length);
+      return newGrid;
+  });
+  setHeatmap(prevHeatmap => {
+    const newHeatmap = prevHeatmap.map((row, i) =>
+        row.map((value, j) => {
+            // If the cell state is toggled, reset or adjust its heatmap value
+            // This example resets the heatmap value for the toggled cell
+            // Adjust the logic here based on how you want to handle heatmap updates
+            if (rowIndex === i && colIndex === j) {
+                return value === 1 ? 0 : 1; // if value less than 1, toggle to 1, else toggle to 0
+            } else {
+                return value;
+            }
+        })
+    );
+    return newHeatmap;
+  });
+};
 
   const resetGrid = () => {
-    // Functionality to reset the grid to its initial state
-    // Update livingCellsCount as needed
-    const newGrid = createInitialGrid(); // Assuming createInitialGrid() is your method for initializing the grid
+    const { grid: newGrid, heatmap: newHeatmap } = initializeGridAndHeatmap(width, height); // Correctly get both newGrid and newHeatmap
     setGrid(newGrid);
-
-    // const newHeatmap = createInitialHeatmap(); // Initialize or reset your heatmap here
-    // setHeatmap(newHeatmap);
-
-    const newLivingCellsCount = newGrid.flat().filter(cell => cell === 1).length; // Assuming living cells are marked with 1
-    setLivingCellsCount(newLivingCellsCount);
+    setHeatmap(newHeatmap);
+    setLivingCellsCount(newGrid.flat().filter(cell => cell === 1).length);
   };
 
   const updateLivingCellCount = (grid) => {
@@ -68,18 +105,21 @@ const Grid = ({ width, height }) => {
     // Functionality to advance the simulation by one step
     // update the grid state and the heatmap state
     // update livingCellsCount based on the new grid state
-    const newGrid = calculateNextGridState(grid);
+    const [newGrid, newHeatmap] = calculateNextGridState(grid, heatmap);
   
     setGrid(newGrid);
+    setHeatmap(newHeatmap);
     const newLivingCellsCount = newGrid.flat().filter(cell => cell === 1).length; // Assuming living cells are marked with 1
     setLivingCellsCount(newLivingCellsCount);
   };
 
 
-  function calculateNextGridState(grid) {
+  function calculateNextGridState(grid, heatmap) {
     const height = grid.length;
     const width = grid[0].length;
     const newGrid = Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
+    const newHeatmap = Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
+
   
     for (let i = 0; i < height; i++) {
       for (let j = 0; j < width; j++) {
@@ -89,15 +129,21 @@ const Grid = ({ width, height }) => {
         // Game of Life rules
         if (isAlive && (aliveNeighbors === 2 || aliveNeighbors === 3)) {
           newGrid[i][j] = 1; // Cell stays alive
+          newHeatmap[i][j] = 1; // Reset heatmap for living cell
+
         } else if (!isAlive && aliveNeighbors === 3) {
           newGrid[i][j] = 1; // Cell becomes alive
+          newHeatmap[i][j] = 1; // Reset heatmap for new living cell
+
         } else {
           newGrid[i][j] = 0; // Cell dies or remains dead
+          newHeatmap[i][j] = Math.max(heatmap[i][j] - 0.1, 0); // Update heatmap based on cell's previous state
+
         }
       }
     }
   
-    return newGrid;
+    return [newGrid, newHeatmap];
   }
   
   // Helper function to count alive neighbors
@@ -115,7 +161,24 @@ const Grid = ({ width, height }) => {
     }
     return count;
   }
+  
 
+  // function updateHeatmapForNextStep(grid, heatmap) {
+  //   const newHeatmap = heatmap.map((row, rowIndex) => 
+  //     row.map((cell, colIndex) => {
+  //       // If the current cell in the grid is alive, reset its heatmap value to 0
+  //       if (grid[rowIndex][colIndex] === 1) {
+  //         return 1;
+  //       } else {
+  //         // If the cell is dead, decrease its heatmap value, indicating how long it has been dead
+  //         // You might want to cap this value or let it increase indefinitely
+  //         return cell - 0.1;
+  //       }
+  //     })
+  //   );
+  
+  //   return newHeatmap;
+  // }
   
   
 
@@ -123,19 +186,29 @@ const Grid = ({ width, height }) => {
   return (
     <div style={{ display: 'grid', gridTemplateRows: `repeat(${height}, 20px)`, gridTemplateColumns: `repeat(${width}, 20px)` }}>
       {grid.map((row, rowIndex) => (
-        row.map((cell, colIndex) => (
+        row.map((cell, colIndex) => {
+          //Extract heatmapValue for the current cell using rowIndex and colIndex
+          const heatmapValue = heatmap[rowIndex][colIndex];
+
+          return(
           <Cell
             key={`${rowIndex}-${colIndex}`}
             isAlive={cell === 1}
+            heatmapValue={heatmapValue}
+            showHeatmap={showHeatmap}
             toggleCellState={() => toggleCellState(rowIndex, colIndex)}
           />
-        ))
+        )
+      })
       ))}
       {/* Render the grid here */}
       <div>
       <button onClick={resetGrid} >Reset Grid</button>
       <button onClick={advanceSimulation}>Next Step</button>
-      <div class="box">Living Cells: {livingCellsCount}</div>
+      <button onClick={() => setShowHeatmap(!showHeatmap)}>
+        {showHeatmap ? "Show Black & White" : "Show Heatmap"}
+      </button>
+      <div className="box">Living Cells: {livingCellsCount}</div>
       </div>
 
     </div>
