@@ -1,29 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;500&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "system-ui", sans-serif !important;
+  font-weight: normal;
+}
+
 button {
-    background-color: #4CAF50; /* Green background */
-    color: black; /* White text */
-    padding: 10px 20px; /* Padding around the text */
-    margin: 10px; /* Margin around the button */
-    border: none; /* No border */
-    cursor: pointer; /* Cursor changes to pointer on hover */
-    border-radius: 5px; /* Rounded corners */
-    text-wrap: center;
-    font-size: 14px; /* Adjusted font size */
-    min-width: 120px;
-  }
+  background-color: #70b797;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-wrap: center;
+  font-size: 14px;
+  min-width: 120px;
+}
 
 body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    height: 100vh;
-    background-color: #f1f1f1;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  height: 100vh;
+  background-color: #f1f1f1;
+}
 
-  .box {
-    font-size: 16px; /* Adjusted font size */
-    min-width: 120px;
-    margin: 10px; /* Margin around the button */
-    border: none; /* No border */
-    
-  }
+input {
+  border: 1px solid #6d6d6d !important;
+  padding-left: 20px;
+  border-radius: 4px !important;
+}
+
+h1,
+div.App {
+  justify-content: center !important;
+  display: grid !important;
+}
+
+.btn {
+  margin-top: 10px;
+}
