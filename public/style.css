@@ -48,3 +48,12 @@ div.App {
 .btn {
   margin-top: 10px;
 }
+
+label {
+  margin-right: 10px;
+}
+
+input {
+  margin-left: 5px;
+  margin-right: 5px;
+}
