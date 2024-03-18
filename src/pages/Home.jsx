@@ -36,9 +36,7 @@ function Home() {
           </li>
         </ul>
         <Link to="/game">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
-            Start Game
-          </button>
+          <button className="startbtn">Start Game</button>
         </Link>
       </div>
     </>
