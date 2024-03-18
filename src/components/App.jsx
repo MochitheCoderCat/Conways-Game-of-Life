@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Grid from "./Grid";
+import { message } from "antd";
 
 const App = () => {
   // State for grid size
@@ -9,6 +10,8 @@ const App = () => {
   // State for input fields
   const [inputWidth, setInputWidth] = useState(20);
   const [inputHeight, setInputHeight] = useState(20);
+
+  const [isLongerLastingActive, setIsLongerLastingActive] = useState(false);
 
   // Handle change in input fields
   const handleWidthChange = (e) => {
@@ -29,10 +32,9 @@ const App = () => {
     if (widthVal >= 3 && widthVal <= 40 && heightVal >= 3 && heightVal <= 40) {
       setGridSize({ width: widthVal, height: heightVal });
     } else {
-      console.log(
+      message.error(
         "Please enter values between 3 and 40 for both width and height."
       );
-      // Here, implement a user-friendly error message instead of console.log
     }
   };
 
@@ -63,6 +65,15 @@ const App = () => {
               placeholder="Height"
             />
           </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={isLongerLastingActive}
+              onChange={(e) => setIsLongerLastingActive(e.target.checked)}
+            />
+            Longer Lasting
+          </label>
+
           <button type="submit">Set Grid Size</button>
         </form>
       </div>
