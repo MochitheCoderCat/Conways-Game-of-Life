@@ -33,6 +33,15 @@ body {
   background-color: #f1f1f1;
 }
 
+html,
+body,
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  align-self: self-start;
+}
+
 input {
   border: 1px solid #6d6d6d !important;
   padding-left: 20px;
@@ -43,6 +52,12 @@ h1,
 div.App {
   justify-content: center !important;
   display: grid !important;
+  margin-bottom: 10px;
+}
+
+h2,
+p {
+  margin-bottom: 10px;
 }
 
 .btn {
@@ -56,4 +71,19 @@ label {
 input {
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.navbar {
+  padding-bottom: 20px;
+  justify-items: center;
+}
+
+.home {
+  margin-left: 42% !important;
+}
+
+.container {
+  width: 40%;
+  margin-left: 32%;
+  margin-top: 100px;
 }
