@@ -5,7 +5,7 @@ import { Menu } from "antd";
 const Navbar = () => {
   return (
     <div className="fixed top-10 left-0 right-0 z-10 bg-white shadow-md navbar">
-      <Menu mode="horizontal">
+      <Menu mode="horizontal" className="menu">
         <Menu.Item key="home" className="home">
           <Link to="/">Home</Link>
         </Menu.Item>
