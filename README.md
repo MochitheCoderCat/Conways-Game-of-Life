@@ -2,4 +2,11 @@
 
 ## Convey's Game of Life
 
-npm start
+### How to start
+
+npm run dev
+
+### Packages
+
+vite
+tailwind
