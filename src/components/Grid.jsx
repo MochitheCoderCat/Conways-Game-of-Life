@@ -32,6 +32,10 @@ const Grid = ({ width, height }) => {
     () => initialGrid.flat().filter((cell) => cell === 1).length
   );
 
+  // State for autoplay
+  const [isAutoplaying, setIsAutoplaying] = useState(false);
+  const [autoplayInterval, setAutoplayInterval] = useState(null);
+
   // Regenerate the grid when width or height changes
   useEffect(() => {
     // setGrid(createInitialGrid());
@@ -42,15 +46,6 @@ const Grid = ({ width, height }) => {
     setGrid(newGrid);
     setHeatmap(newHeatmap);
   }, [width, height]); // Dependence on width and height
-
-  // const toggleCellState = (rowIndex, colIndex) => {
-  //   const newGrid = grid.map((row, i) =>
-  //     row.map((cell, j) =>
-  //       rowIndex === i && colIndex === j ? 1 - cell : cell
-  //     )
-  //   );
-  //   setGrid(newGrid);
-  // };
 
   const toggleCellState = (rowIndex, colIndex) => {
     setGrid((prevGrid) => {
@@ -169,6 +164,19 @@ const Grid = ({ width, height }) => {
     return count;
   }
 
+  const toggleAutoplay = () => {
+    if (isAutoplaying) {
+      clearInterval(autoplayInterval);
+      setIsAutoplaying(false);
+    } else {
+      const intervalId = setInterval(() => {
+        advanceSimulation();
+      }, 100);
+      setAutoplayInterval(intervalId);
+      setIsAutoplaying(true);
+    }
+  };
+
   return (
     <div>
       <div
@@ -200,7 +208,9 @@ const Grid = ({ width, height }) => {
         <div className="flex btn">
           <button onClick={resetGrid}>Reset Grid</button>
           <button onClick={advanceSimulation}>Next Frame</button>
-          <button>Autoplay</button>
+          <button onClick={toggleAutoplay}>
+            {isAutoplaying ? "Stop Autoplay" : "Start Autoplay"}
+          </button>
           <button onClick={() => setShowHeatmap(!showHeatmap)}>
             {showHeatmap ? "Show Black & White" : "Show Heatmap"}
           </button>
