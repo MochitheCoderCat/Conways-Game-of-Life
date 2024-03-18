@@ -217,7 +217,7 @@ const Grid = ({ width, height }) => {
         </div>
 
         <div className="mt-5">
-          <h3>Living Cells: {livingCellsCount}</h3>
+          <p>Living Cells: {livingCellsCount}</p>
         </div>
       </div>
     </div>
