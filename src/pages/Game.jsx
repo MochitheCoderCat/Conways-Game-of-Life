@@ -46,7 +46,7 @@ const App = () => {
         <h1>Conway's Game of Life</h1>
         <div className="App">
           <form onSubmit={handleGridSizeChange}>
-            <label>
+            <label className="infos">
               Width:
               <input
                 type="number"

@@ -122,3 +122,23 @@ a:hover {
 a:active {
   color: #0c5735;
 }
+
+@media (max-width: 600px) {
+  .container {
+    width: 80vw;
+    margin-left: 10vw;
+    margin-top: 18vh;
+  }
+  .startbtn {
+    margin-left: 25vw;
+    margin-top: 30px;
+  }
+
+  .home {
+    margin-left: 25vw !important;
+  }
+
+  .infos {
+    margin-left: 10px;
+  }
+}

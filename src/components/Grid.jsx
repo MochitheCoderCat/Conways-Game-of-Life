@@ -216,7 +216,7 @@ const Grid = ({ width, height }) => {
           </button>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 infos">
           <p>Living Cells: {livingCellsCount}</p>
         </div>
       </div>
